@@ -1,0 +1,13 @@
+import '../../rakelib/Rakefile'
+
+require 'docker'
+require 'rake'
+
+namespace :ubuntu_dev do
+  desc 'Set image name and build'
+  task :build do
+    @name='ubuntu-dev'
+    USER=`whoami`.strip
+    Rake::Task['docker:build'].invoke(:buildargs => { 'user' => USER })
+  end
+end

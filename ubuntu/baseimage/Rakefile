@@ -1,0 +1,12 @@
+import '../../rakelib/Rakefile'
+
+require 'docker'
+require 'rake'
+
+namespace :ubuntu_baseimage do
+  desc 'Set image name and build'
+  task :build do
+    @name='ubuntu-baseimage'
+    Rake::Task['docker:build'].invoke
+  end
+end
