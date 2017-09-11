@@ -3,7 +3,6 @@ require 'spec_helper'
 
 describe 'Docker image' do
   before :all do
-    Rake::Task['ubuntu_baseimage:build'].invoke
     @image = Docker::Image::get 'rucker/ubuntu-baseimage:latest'
     set :os, family: :debian
     set :backend, :docker

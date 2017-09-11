@@ -1,12 +1,15 @@
 import '../../rakelib/Rakefile'
 
-require 'docker'
-require 'rake'
+task :default => [ :build, 'docker:test' ]
+task :build => 'ubuntu_baseimage:build'
 
 namespace :ubuntu_baseimage do
   desc 'Set image name and build'
   task :build do
     @name='ubuntu-baseimage'
+    wd = Dir.getwd
+    Dir.chdir File.dirname(__FILE__)
     Rake::Task['docker:build'].invoke
+    Dir.chdir wd
   end
 end

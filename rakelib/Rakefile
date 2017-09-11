@@ -6,7 +6,10 @@ require 'rspec/core/rake_task'
 @name = nil
 
 task :default => 'docker:test'
+
 namespace :docker do
+
+  task :test => [ :spec, :cleanup ]
   
   desc 'Run specs'
   RSpec::Core::RakeTask.new(:spec) do |t|
@@ -21,16 +24,11 @@ namespace :docker do
     system "docker rmi #{images}" unless images.empty?
   end
   
-  task :test => [
-    :spec,
-    :cleanup
-  ]
-  
   desc 'Build docker image'
   task :build, [:args] do |t, args|
-    #TODO What should happen if user invokes rake docker:build?
     unless @name.nil?
       opts = { 't' => "#{@group}/#{@name}:latest" }
+      #TODO Handle arbitrary args
       unless args.to_a.empty? or args['args'][:buildargs].empty?
         opts = opts.merge({ 'buildargs' => args['args'][:buildargs].to_json })
       end

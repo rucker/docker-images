@@ -1,13 +1,15 @@
 import '../../rakelib/Rakefile'
+import '../baseimage/Rakefile'
 
-require 'docker'
-require 'rake'
+task :default => [ :build, 'docker:test' ]
+task :build => 'ubuntu_dev:build'
 
 namespace :ubuntu_dev do
   desc 'Set image name and build'
-  task :build do
+  task :build => 'ubuntu_baseimage:build' do
     @name='ubuntu-dev'
     USER=`whoami`.strip
+    Rake::Task['docker:build'].reenable
     Rake::Task['docker:build'].invoke(:buildargs => { 'user' => USER })
   end
 end
