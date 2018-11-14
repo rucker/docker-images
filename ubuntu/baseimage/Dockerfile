@@ -3,7 +3,7 @@ FROM ubuntu:latest
 # Upgrade, install packages
 RUN apt-get update -qq && \
     apt-get upgrade -y
-RUN apt-get install -y \
+RUN env DEBIAN_FRONTEND=noninteractive apt-get install -y \
     git-core locales htop sudo tree tzdata vim
 
 # Configure system

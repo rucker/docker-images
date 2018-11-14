@@ -21,7 +21,7 @@ describe 'Docker image' do
   end
 
   describe command 'cat /etc/lsb-release'  do
-    its(:stdout) { should include 'Ubuntu 16' }
+    its(:stdout) { should include 'Ubuntu 18' }
   end
 
   describe command 'locale -a' do
