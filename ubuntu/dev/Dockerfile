@@ -1,7 +1,7 @@
 FROM rucker/ubuntu-baseimage:latest
 
-ARG user=$USER
-
+RUN apt-get install -y git-core htop sudo tree vim
 # Configure user
+ARG user=$USER
 RUN useradd $user --create-home -g sudo
 RUN passwd -d $user

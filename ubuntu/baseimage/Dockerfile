@@ -4,7 +4,7 @@ FROM ubuntu:latest
 RUN apt-get update -qq && \
     apt-get upgrade -y
 RUN env DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    git-core locales htop sudo tree tzdata vim
+    locales tzdata
 
 # Configure system
 RUN echo "America/New_York" > /etc/timezone
