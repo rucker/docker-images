@@ -1,6 +1,7 @@
 require 'docker'
 require 'rake'
 require 'rspec/core/rake_task'
+require 'Yajl'
 
 @group = 'rucker'
 @name = nil
@@ -32,7 +33,11 @@ namespace :docker do
       unless args.to_a.empty? or args['args'][:buildargs].empty?
         opts = opts.merge({ 'buildargs' => args['args'][:buildargs].to_json })
       end
-      Docker::Image.build_from_dir('.', opts)
+      parser = Yajl::Parser.new
+      parser.on_parse_complete = ->(obj) { print obj['stream'] }
+      Docker::Image.build_from_dir('.', opts)	do |line|
+        parser.parse(line)
+			end
     end
   end
 end
