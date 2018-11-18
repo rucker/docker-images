@@ -3,7 +3,15 @@ require 'spec_helper'
 
 describe 'Docker image' do
   before :all do
-    @image = Docker::Image::get 'rucker/ubuntu-dev:latest'
+    begin
+      image_name = 'rucker/ubuntu-dev:latest'
+      @image = Docker::Image::get image_name
+    rescue
+      #FIXME: Build baseimage from dev image Rakefile
+      Rake::Task['ubuntu_dev:build'].reenable
+      Rake::Task['ubuntu_dev:build'].invoke(:buildargs => { 'user' => @user })
+      @image = Docker::Image::get image_name
+    end
     set :os, family: :debian
     set :backend, :docker
     set :docker_container, 'test_container'

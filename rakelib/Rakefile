@@ -1,4 +1,5 @@
 require 'docker'
+require 'JSON'
 require 'rake'
 require 'rspec/core/rake_task'
 require 'Yajl'
@@ -22,6 +23,7 @@ namespace :docker do
   desc 'Remove dangling docker images'
   task :cleanup do
     images = `docker images -q -f dangling=true`
+    #FIXME don't output images when capturing them
     system "docker rmi #{images}" unless images.empty?
   end
   
@@ -31,7 +33,7 @@ namespace :docker do
       opts = { 't' => "#{@group}/#{@name}:latest" }
       #TODO Handle arbitrary args
       unless args.to_a.empty? or args['args'][:buildargs].empty?
-        opts = opts.merge({ 'buildargs' => args['args'][:buildargs].to_json })
+        opts = opts.merge({ 'buildargs' => JSON.generate(args['args'][:buildargs]) })
       end
       parser = Yajl::Parser.new
       parser.on_parse_complete = ->(obj) { print obj['stream'] }

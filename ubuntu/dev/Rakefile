@@ -5,11 +5,23 @@ task :default => [ :build, 'docker:test' ]
 task :build => 'ubuntu_dev:build'
 
 namespace :ubuntu_dev do
+  @user = `whoami`.strip
   desc 'Set image name and build'
   task :build => 'ubuntu_baseimage:build' do
     @name='ubuntu-dev'
-    USER=`whoami`.strip
     Rake::Task['docker:build'].reenable
-    Rake::Task['docker:build'].invoke(:buildargs => { 'user' => USER })
+    Rake::Task['docker:build'].invoke(:buildargs => { 'user' => @user })
+  end
+
+  desc 'Enter container as current user'
+  task :run do
+    system "docker run -it -u #{@user} -w /home/#{@user} rucker/ubuntu-dev:latest"
+    begin
+      image = Docker::Image.get("rucker/ubuntu-dev:latest")
+    rescue
+      task = Rake::Task['docker:ubuntu_dev:build']
+      task.reenable
+      task.invoke
+    end
   end
 end
