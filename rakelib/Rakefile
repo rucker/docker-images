@@ -1,8 +1,8 @@
 require 'docker'
-require 'JSON'
+require 'json'
 require 'rake'
 require 'rspec/core/rake_task'
-require 'Yajl'
+require 'yajl'
 
 @group = 'rucker'
 @name = nil
