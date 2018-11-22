@@ -1,0 +1,27 @@
+import '../../rakelib/Rakefile'
+import '../baseimage/Rakefile'
+
+task :default => [ :build, 'docker:test' ]
+task :build => 'banshee:build'
+
+namespace :banshee do
+  @user = `whoami`.strip
+  desc 'Set image name and build'
+  task :build => 'ubuntu_baseimage:build' do
+    @name='banshee'
+    Rake::Task['docker:build'].reenable
+    Rake::Task['docker:build'].invoke(:buildargs => { 'user' => @user })
+  end
+
+  desc 'Enter container as current user'
+  task :run do
+    system "docker run -it -u #{@user} -w /home/#{@user} rucker/banshee:latest"
+    begin
+      image = Docker::Image.get("rucker/banshee:latest")
+    rescue
+      task = Rake::Task['docker:banshee:build']
+      task.reenable
+      task.invoke
+    end
+  end
+end

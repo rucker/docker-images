@@ -31,6 +31,9 @@ namespace :docker do
   task :build, [:args] do |t, args|
     unless @name.nil?
       opts = { 't' => "#{@group}/#{@name}:latest" }
+      #TODO extended timeout needed for banshee image
+      # but setting it there doesn't work. Why is that?
+      Docker.options[:read_timeout] = 240
       #TODO Handle arbitrary args
       unless args.to_a.empty? or args['args'][:buildargs].empty?
         opts = opts.merge({ 'buildargs' => JSON.generate(args['args'][:buildargs]) })
