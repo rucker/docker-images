@@ -16,8 +16,8 @@ namespace :banshee do
   desc 'Enter container as current user'
   task :run do
     ip = `ifconfig | grep \"inet \" | grep -v 127.0.0.1 | awk '{print $2}'`.strip
-    system "docker run -it -u #{@user} -w /home/#{@user} -e DISPLAY=#{ip}:0 \
-      -v ${HOME}/code:${HOME}/code-v ${HOME}/Music:${HOME}/Music rucker/banshee:latest"
+    system "docker run -it -u #{@user} -w /home/#{@user} -e DISPLAY=#{ip}:0 " \
+      "-v ${HOME}/code:/home/#{@user}/code -v ${HOME}/Music:/home/#{@user}/Music rucker/banshee:latest"
     begin
       image = Docker::Image.get("rucker/banshee:latest")
     rescue
