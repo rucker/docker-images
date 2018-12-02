@@ -21,10 +21,14 @@ popd
 
 if [[ ! -d ${BANSHEE_DIR} ]]; then
   git clone https://github.com/rucker/banshee.git &&\
-  cd ${BANSHEE_DIR} &&\
+  pushd ${BANSHEE_DIR} &&\
   git checkout feature/build &&\
   git submodule update --init
+  popd
 fi
+
+#TODO don't continue if the steps above failed
+
 cd ${BANSHEE_DIR} &&\
 autoreconf -ivf &&\
 #FIXME why is lastfm still being compiled? Does disabling it not skip compilation?
