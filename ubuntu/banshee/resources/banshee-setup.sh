@@ -1,12 +1,24 @@
 #!/bin/bash
 
 CODE_DIR=${HOME}/code
+BANSHEE_DIR=banshee
+DBUS_SHARP_DIR=dbus-sharp
 
 [[ -d ${CODE_DIR} ]] || mkdir ${CODE_DIR}
 
 cd ${CODE_DIR}
 
-BANSHEE_DIR=banshee
+[[ -d ${DBUS_SHARP_DIR} ]] || git clone https://github.com/rucker/dbus-sharp.git
+
+pushd ${DBUS_SHARP_DIR} &&\
+./autogen.sh &&\
+#TODO Get msbuild into Makefile
+msbuild src/dbus-sharp.csproj /p:WarningLevel=0;Configuration=Release &&\
+sudo make install
+popd
+
+#TODO don't continue if the steps above failed
+
 if [[ ! -d ${BANSHEE_DIR} ]]; then
   git clone https://github.com/rucker/banshee.git &&\
   cd ${BANSHEE_DIR} &&\
