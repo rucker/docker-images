@@ -12,6 +12,10 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E03280
 
 RUN env DEBIAN_FRONTEND=noninteractive apt-get -y install gnome-sharp2 gtk-sharp3 libdbus-glib2.0-cil-dev libgtk-3-dev libgtk2.0-cil-dev libgtk2.0-dev libmono-addins-cil-dev libtaglib-cil-dev
 
+# GStreamer dependencies
+RUN env DEBIAN_FRONTEND=noninteractive apt-get -y install flex libgstreamer-plugins-good1.0-dev libgstreamer-plugins-bad1.0-dev libxml2-dev ninja-build python3-pip &&\
+     pip3 install meson
+
 ADD resources/banshee-setup.sh /usr/local/bin/banshee-setup
 
 RUN echo 'alias run="make run 2>&1 | tee banshee.log"' >> /home/$user/.bashrc
