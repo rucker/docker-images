@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 gem 'docker-api', :require => 'docker'
 gem 'json'
+gem 'platform'
 gem 'rake'
 gem 'rspec'
 gem 'serverspec'

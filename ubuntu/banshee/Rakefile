@@ -1,6 +1,8 @@
 import '../../rakelib/Rakefile'
 import '../baseimage/Rakefile'
 
+require 'platform'
+
 task :default => [ :build, 'docker:test' ]
 task :build => 'banshee:build'
 
@@ -15,13 +17,22 @@ namespace :banshee do
 
   desc 'Enter container as current user'
   task :run do
-    ip = `ifconfig | grep \"inet \" | grep -v 127.0.0.1 | grep -v \"broadcast 0.0.0.0\" | awk '{print $2}'`.strip
+    os = Gem::Platform::local.os
+    if os == "linux"
+      display = "unix" + ENV['DISPLAY']
+    elsif os == "darwin"
+      ip = `ifconfig | grep \"inet \" | grep -v 127.0.0.1 | grep -v \"broadcast 0.0.0.0\" | awk '{print $2}'`.strip
+      display = "#{ip}\:0"
+    end
     system "docker run -it "\
       "-u #{@user} "\
       "-w /home/#{@user} "\
-      "-e DISPLAY=#{ip}\:0 " \
+      "-e DISPLAY=#{display} "\
       "-v ${HOME}/code:/home/#{@user}/code "\
       "-v ${HOME}/Music:/home/#{@user}/Music "\
+      "-v ${HOME}/.config/banshee-1:/home/#{@user}/.config/banshee-1 "\
+      "-v /tmp/.X11-unix:/tmp/.X11-unix "\
+      "--device /dev/snd "\
       "rucker/banshee:latest"
     begin
       image = Docker::Image.get("rucker/banshee:latest")
